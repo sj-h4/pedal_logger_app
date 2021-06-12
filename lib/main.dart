@@ -1,12 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_blue/flutter_blue.dart';
-import 'package:pedal_logger_flutter/view/dataView.dart';
 
+import 'package:pedal_logger_flutter/view/dataView.dart';
 import 'view/dataView.dart';
 import 'view/bottom_navi_view.dart';
 
@@ -20,8 +15,8 @@ enum TabType {
   setting,
 }
 
-final powerProvider =
-    StateNotifierProvider<PowerViewModel, int>((ref) => PowerViewModel());
+final powerProvider = StateNotifierProvider<PowerViewModel, AsyncValue<int>>(
+    (_) => PowerViewModel());
 
 void main() {
   runApp(ProviderScope(child: BottomNavigationBarView()));
