@@ -105,6 +105,7 @@ class PedalBle {
     await bleCharactaristic?.setNotifyValue(true);
     bleCharactaristic?.value?.listen((value) async {
       power = value[3] * 256 + value[2];
+      print("$power");
       return power;
     });
   }

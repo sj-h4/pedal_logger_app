@@ -8,8 +8,6 @@ import 'package:pedal_logger_flutter/ble/pedal_ble.dart';
 class PowerViewModel extends StateNotifier<AsyncValue<int>> {
   PowerViewModel() : super(const AsyncValue.loading());
 
-  final PedalBle pedalBle = PedalBle();
-
   Future<void> getPower() async {
     state = const AsyncValue.loading();
     try {
@@ -44,7 +42,7 @@ class _BuildData extends HookWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
-            '$power',
+            '${power.data}',
             style: Theme.of(context).textTheme.headline4,
           ),
           ElevatedButton(
