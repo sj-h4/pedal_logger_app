@@ -47,8 +47,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   int power = 0;
 
-  int _counter = 0;
-
   void _startScan() {
     flutterBlue.startScan(timeout: Duration(seconds: 4));
     log("deviceStatus: connecting");
@@ -58,22 +56,21 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     // Listen to scan results
-    flutterBlue.scanResults.listen((results) {
-      // do something with scan results
-      for (ScanResult r in results) {
-        print(r.device.name);
-        if (r.device.name == deviceName) {
-          isConnected = true;
-          targetDevice = r.device;
-          connectToDevice();
-          flutterBlue.stopScan();
-          break;
+    flutterBlue.scanResults.listen(
+      (results) {
+        // do something with scan results
+        for (ScanResult r in results) {
+          print(r.device.name);
+          if (r.device.name == deviceName) {
+            isConnected = true;
+            targetDevice = r.device;
+            connectToDevice();
+            flutterBlue.stopScan();
+            break;
+          }
         }
-      }
-    }, onDone: () => flutterBlue.stopScan());
-
-    // Stop scanning
-    flutterBlue.stopScan();
+      },
+    );
   }
 
   void connectToDevice() async {
@@ -81,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     await targetDevice.connect();
     setState(() {
-      deviceStatus = "Connected: $targetDevice.name";
+      deviceStatus = "Connected: ${targetDevice.name}";
       print('connected');
     });
     targetDevice.isDiscoveringServices.forEach((element) {
@@ -133,6 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
     await bleCharactaristic?.setNotifyValue(true);
 
     bleCharactaristic?.value?.listen((value) async {
+      print("$value");
       setState(() {
         power = value[3] * 256 + value[2];
       });
@@ -150,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'You have pushed the button this many times:',
+              '$deviceStatus',
             ),
             Text(
               '$power W',
