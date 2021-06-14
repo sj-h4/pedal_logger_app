@@ -3,17 +3,24 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:pedal_logger_flutter/main.dart';
-import 'package:pedal_logger_flutter/ble/pedal_ble.dart';
+import 'timerView.dart';
 
 class DataView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Data'),
-      ),
-      body: _BuildData(),
-    );
+        appBar: AppBar(
+          title: const Text('Data'),
+        ),
+        body: Center(
+          child: Column(
+            children: <Widget>[
+              TimerTextWidget(),
+              StartButton(),
+              _BuildData(),
+            ],
+          ),
+        ));
   }
 }
 
