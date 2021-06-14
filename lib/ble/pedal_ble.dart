@@ -1,4 +1,24 @@
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+
+import 'package:pedal_logger_flutter/main.dart';
+
+class PowerViewModel extends StateNotifier<AsyncValue<int>> {
+  PowerViewModel() : super(const AsyncValue.loading()) {
+    getPower();
+  }
+
+  Future<void> getPower() async {
+    state = const AsyncValue.loading();
+    try {
+      final power = await pedalBle.recieveNotification();
+      state = AsyncValue.data(power);
+    } catch (e) {
+      state = AsyncValue.error(e);
+    }
+  }
+}
 
 class PedalBle {
   final String deviceName = "V3 BLE:0442838";
@@ -18,7 +38,7 @@ class PedalBle {
   int power = 0;
 
   void _startScan() {
-    flutterBlue.startScan(timeout: Duration(seconds: 4));
+    flutterBlue.startScan();
     print("deviceStatus: connecting");
     if (isConnected) {
       disconnectDevice();
@@ -26,22 +46,21 @@ class PedalBle {
     }
 
     // Listen to scan results
-    flutterBlue.scanResults.listen((results) {
-      // do something with scan results
-      for (ScanResult r in results) {
-        print(r.device.name);
-        if (r.device.name == deviceName) {
-          isConnected = true;
-          targetDevice = r.device;
-          connectToDevice();
-          flutterBlue.stopScan();
-          break;
+    flutterBlue.scanResults.listen(
+      (results) {
+        // do something with scan results
+        for (ScanResult r in results) {
+          print(r.device.name);
+          if (r.device.name == deviceName && !isConnected) {
+            isConnected = true;
+            targetDevice = r.device;
+            connectToDevice();
+            flutterBlue.stopScan();
+            break;
+          }
         }
-      }
-    }, onDone: () => flutterBlue.stopScan());
-
-    // Stop scanning
-    flutterBlue.stopScan();
+      },
+    );
   }
 
   void connectToDevice() async {

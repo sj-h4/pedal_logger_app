@@ -5,20 +5,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pedal_logger_flutter/main.dart';
 import 'package:pedal_logger_flutter/ble/pedal_ble.dart';
 
-class PowerViewModel extends StateNotifier<AsyncValue<int>> {
-  PowerViewModel() : super(const AsyncValue.loading());
-
-  Future<void> getPower() async {
-    state = const AsyncValue.loading();
-    try {
-      final power = await pedalBle.recieveNotification();
-      state = AsyncValue.data(power);
-    } catch (e) {
-      state = AsyncValue.error(e);
-    }
-  }
-}
-
 class DataView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -41,6 +27,15 @@ class _BuildData extends HookWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          power.maybeWhen(error: (e, stateTrace) {
+            return Text(e.toString());
+          }, orElse: () {
+            final data = power.data?.value;
+            return Text(
+              "$data",
+              style: Theme.of(context).textTheme.headline4,
+            );
+          }),
           Text(
             '${power.data}',
             style: Theme.of(context).textTheme.headline4,
