@@ -42,7 +42,7 @@ class _BuildData extends HookWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              context.read(powerProvider.notifier).getPower();
+              context.read(powerProvider.notifier);
             },
             child: Text('CONNECT'),
           )

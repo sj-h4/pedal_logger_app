@@ -6,21 +6,9 @@ import 'package:pedal_logger_flutter/main.dart';
 
 class PowerViewModel extends StateNotifier<AsyncValue<int>> {
   PowerViewModel() : super(const AsyncValue.loading()) {
-    getPower();
+    _startScan();
   }
 
-  Future<void> getPower() async {
-    state = const AsyncValue.loading();
-    try {
-      final power = await pedalBle.recieveNotification();
-      state = AsyncValue.data(power);
-    } catch (e) {
-      state = AsyncValue.error(e);
-    }
-  }
-}
-
-class PedalBle {
   final String deviceName = "V3 BLE:0442838";
   FlutterBlue flutterBlue = FlutterBlue.instance;
 
@@ -107,7 +95,7 @@ class PedalBle {
 
           if (charactaristic.uuid.toString() == charactaristicUUID) {
             bleCharactaristic = charactaristic;
-            //recieveNotification();
+            recieveNotification();
           } else {
             print("cannot");
           }
@@ -118,14 +106,19 @@ class PedalBle {
     });
   }
 
-  Future<int> recieveNotification() async {
-    _startScan();
+  Future<void> recieveNotification() async {
     if (targetDevice == null) return 0;
     await bleCharactaristic?.setNotifyValue(true);
     bleCharactaristic?.value?.listen((value) async {
       power = value[3] * 256 + value[2];
       print("$power");
-      return power;
+
+      state = const AsyncValue.loading();
+      try {
+        state = AsyncValue.data(power);
+      } catch (e) {
+        state = AsyncValue.error(e);
+      }
     });
   }
 }
