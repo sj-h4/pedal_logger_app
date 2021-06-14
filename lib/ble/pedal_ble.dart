@@ -122,3 +122,11 @@ class PowerViewModel extends StateNotifier<AsyncValue<int>> {
     });
   }
 }
+
+class AverageNotifer extends StateNotifier<List<int>> {
+  AverageNotifer() : super([]);
+
+  void addPower(int power) {
+    state.add(power);
+  }
+}

@@ -22,6 +22,7 @@ class _BuildData extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final power = useProvider(powerProvider);
+    final aveList = useProvider(averageNotifer);
 
     return Center(
       child: Column(
@@ -37,7 +38,7 @@ class _BuildData extends HookWidget {
             );
           }),
           Text(
-            '${power.data}',
+            "${aveList.reduce((a, b) => a + b) / aveList.length}",
             style: Theme.of(context).textTheme.headline4,
           ),
           ElevatedButton(

@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class TimerNotifier extends StateNotifier<TimerModel> {
   TimerNotifier() : super(_initialState);
 
-  static const int _initialDuration = 10;
+  static const int _initialDuration = 1200;
   static final _initialState = TimerModel(
     _durationString(_initialDuration),
     ButtonState.initial,

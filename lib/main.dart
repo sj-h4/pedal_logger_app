@@ -20,6 +20,9 @@ enum TabType {
 final powerProvider = StateNotifierProvider<PowerViewModel, AsyncValue<int>>(
     (_) => PowerViewModel());
 
+final averageNotifer =
+    StateNotifierProvider<AverageNotifer, List<int>>((_) => AverageNotifer());
+
 final timerProvider = StateNotifierProvider<TimerNotifier, TimerModel>(
   (ref) => TimerNotifier(),
 );
