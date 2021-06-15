@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'package:pedal_logger_flutter/view/dataView.dart';
-import 'view/dataView.dart';
 import 'view/bottom_navi_view.dart';
 import 'view/timer.dart';
 import 'ble/pedal_ble.dart';
@@ -17,11 +15,8 @@ enum TabType {
   setting,
 }
 
-final powerProvider = StateNotifierProvider<PowerViewModel, AsyncValue<int>>(
-    (_) => PowerViewModel());
-
-final averageNotifer =
-    StateNotifierProvider<AverageNotifer, List<int>>((_) => AverageNotifer());
+final powerProvider =
+    StateNotifierProvider<PowerViewModel, PedalState>((_) => PowerViewModel());
 
 final timerProvider = StateNotifierProvider<TimerNotifier, TimerModel>(
   (ref) => TimerNotifier(),
