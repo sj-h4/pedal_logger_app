@@ -29,3 +29,7 @@ final _timeLeftProvider = Provider<String>((ref) {
 final timeLeftProvider = Provider<String>((ref) {
   return ref.watch(_timeLeftProvider);
 });
+
+void main() {
+  runApp(ProviderScope(child: BottomNavigationBarView()));
+}
