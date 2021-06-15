@@ -14,10 +14,12 @@ class DataView extends StatelessWidget {
         ),
         body: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               TimerTextWidget(),
               StartButton(),
               _BuildData(),
+              ButtonWidget(),
             ],
           ),
         ));
@@ -28,33 +30,52 @@ class _BuildData extends HookWidget {
   const _BuildData({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final power = useProvider(powerProvider);
-    final aveList = useProvider(averageNotifer);
+    final powerState = useProvider(powerProvider);
 
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          power.maybeWhen(error: (e, stateTrace) {
-            return Text(e.toString());
-          }, orElse: () {
-            final data = power.data?.value;
-            return Text(
-              "$data",
-              style: Theme.of(context).textTheme.headline4,
-            );
-          }),
+        children: <Widget>[
           Text(
-            "${aveList.reduce((a, b) => a + b) / aveList.length}",
-            style: Theme.of(context).textTheme.headline4,
+            "${powerState.power} W",
+            style: Theme.of(context).textTheme.headline3,
           ),
-          ElevatedButton(
-            onPressed: () {
-              context.read(powerProvider.notifier);
-            },
-            child: Text('CONNECT'),
-          )
+          /*
+          power.when(
+              data: (data) => Center(
+                    child: Text(
+                      "$data",
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                  ),
+              loading: () => Center(
+                    child: Text("..."),
+                  ),
+              error: (e, stackTrace) => Center(
+                    child: Text(e.toString()),
+                  )),*/
+
+          Text(
+            "ave: ${powerState.average} W",
+            //"${aveList.reduce((a, b) => a + b) / aveList.length}",
+            style: Theme.of(context).textTheme.headline5,
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class ButtonWidget extends HookWidget {
+  const ButtonWidget({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () {
+          context.read(powerProvider.notifier).startScan();
+        },
+        child: Text('CONNECT'),
       ),
     );
   }

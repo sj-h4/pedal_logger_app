@@ -4,11 +4,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:pedal_logger_flutter/main.dart';
 
-class PowerViewModel extends StateNotifier<AsyncValue<int>> {
-  PowerViewModel() : super(const AsyncValue.loading()) {
-    _startScan();
-  }
-
+class PowerViewModel extends StateNotifier<PedalState> {
+  PowerViewModel() : super(PedalState(power: 0, powerList: [], average: "0"));
   final String deviceName = "V3 BLE:0442838";
   FlutterBlue flutterBlue = FlutterBlue.instance;
 
@@ -25,7 +22,7 @@ class PowerViewModel extends StateNotifier<AsyncValue<int>> {
 
   int power = 0;
 
-  void _startScan() {
+  void startScan() {
     flutterBlue.startScan();
     print("deviceStatus: connecting");
     if (isConnected) {
@@ -112,21 +109,26 @@ class PowerViewModel extends StateNotifier<AsyncValue<int>> {
     bleCharactaristic?.value?.listen((value) async {
       power = value[3] * 256 + value[2];
       print("$power");
+      state.power = power;
+      state.powerList.add(power);
 
+      double ave =
+          state.powerList.reduce((a, b) => a + b) / state.powerList.length;
+      state.average = ave.toStringAsFixed(1);
+/*
       state = const AsyncValue.loading();
       try {
         state = AsyncValue.data(power);
-      } catch (e) {
+      } on Exception catch (e) {
         state = AsyncValue.error(e);
-      }
+      } */
     });
   }
 }
 
-class AverageNotifer extends StateNotifier<List<int>> {
-  AverageNotifer() : super([]);
-
-  void addPower(int power) {
-    state.add(power);
-  }
+class PedalState {
+  PedalState({this.power, this.powerList, this.average});
+  int power;
+  List<int> powerList;
+  String average;
 }
