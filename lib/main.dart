@@ -17,6 +17,18 @@ enum TabType {
 
 final powerProvider =
     StateNotifierProvider<PowerViewModel, PedalState>((_) => PowerViewModel());
+final _nowPowerProvider = Provider<int>((ref) {
+  return ref.watch(powerProvider).power;
+});
+final nowPowerProvider = Provider<int>((ref) {
+  return ref.watch(_nowPowerProvider);
+});
+final _averagePowerProvider = Provider<String>((ref) {
+  return ref.watch(powerProvider).average;
+});
+final averagePowerProvider = Provider<String>((ref) {
+  return ref.watch(_averagePowerProvider);
+});
 
 final timerProvider = StateNotifierProvider<TimerNotifier, TimerModel>(
   (ref) => TimerNotifier(),

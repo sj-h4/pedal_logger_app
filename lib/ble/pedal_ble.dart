@@ -1,6 +1,7 @@
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'dart:async';
 
 import 'package:pedal_logger_flutter/main.dart';
 
@@ -17,6 +18,8 @@ class PowerViewModel extends StateNotifier<PedalState> {
 
   // デバイスと接続済みか
   bool isConnected = false;
+
+  StreamSubscription<List<int>> _powerSubscription;
 
   String deviceStatus = "No Device";
 
@@ -105,8 +108,9 @@ class PowerViewModel extends StateNotifier<PedalState> {
 
   Future<void> recieveNotification() async {
     if (targetDevice == null) return 0;
+    _powerSubscription?.cancel();
     await bleCharactaristic?.setNotifyValue(true);
-    bleCharactaristic?.value?.listen((value) async {
+    _powerSubscription = bleCharactaristic?.value?.listen((value) async {
       power = value[3] * 256 + value[2];
       print("$power");
       state.power = power;
@@ -115,6 +119,11 @@ class PowerViewModel extends StateNotifier<PedalState> {
       double ave =
           state.powerList.reduce((a, b) => a + b) / state.powerList.length;
       state.average = ave.toStringAsFixed(1);
+
+      state = PedalState(
+          power: power,
+          powerList: state.powerList,
+          average: ave.toStringAsFixed(1));
 /*
       state = const AsyncValue.loading();
       try {
@@ -122,6 +131,13 @@ class PowerViewModel extends StateNotifier<PedalState> {
       } on Exception catch (e) {
         state = AsyncValue.error(e);
       } */
+    });
+
+    _powerSubscription?.onDone(() {
+      state = PedalState(
+          power: state.power,
+          powerList: state.powerList,
+          average: state.average);
     });
   }
 }
