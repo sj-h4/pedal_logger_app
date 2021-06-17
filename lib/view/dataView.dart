@@ -31,15 +31,16 @@ class _BuildData extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final powerState = useProvider(powerProvider);
-    final nowPower = useProvider(nowPowerProvider);
-    final averagePower = useProvider(averagePowerProvider);
+    //final nowPower = useProvider(nowPowerProvider);
+    //final averagePower = useProvider(averagePowerProvider);
 
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Text(
-            "$nowPower W",
+            //"$nowPower W",
+            "${powerState.power}",
             style: Theme.of(context).textTheme.headline3,
           ),
           /*
@@ -58,7 +59,7 @@ class _BuildData extends HookWidget {
                   )),*/
 
           Text(
-            "ave: $averagePower W",
+            "ave: ${powerState.average} W",
             //"${aveList.reduce((a, b) => a + b) / aveList.length}",
             style: Theme.of(context).textTheme.headline5,
           ),
