@@ -43,26 +43,15 @@ class _BuildData extends HookWidget {
             "${powerState.power}",
             style: Theme.of(context).textTheme.headline3,
           ),
-          /*
-          power.when(
-              data: (data) => Center(
-                    child: Text(
-                      "$data",
-                      style: Theme.of(context).textTheme.headline4,
-                    ),
-                  ),
-              loading: () => Center(
-                    child: Text("..."),
-                  ),
-              error: (e, stackTrace) => Center(
-                    child: Text(e.toString()),
-                  )),*/
-
           Text(
             "ave: ${powerState.average} W",
             //"${aveList.reduce((a, b) => a + b) / aveList.length}",
             style: Theme.of(context).textTheme.headline5,
           ),
+          Text(
+            '${powerState.rotation} rpm',
+            style: Theme.of(context).textTheme.headline4,
+          )
         ],
       ),
     );
@@ -74,11 +63,21 @@ class ButtonWidget extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: ElevatedButton(
-        onPressed: () {
-          context.read(powerProvider.notifier).startScan();
-        },
-        child: Text('CONNECT'),
+      child: Column(
+        children: <Widget>[
+          ElevatedButton(
+            onPressed: () {
+              context.read(powerProvider.notifier).startScan();
+            },
+            child: Text('CONNECT'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              context.read(powerProvider.notifier).resetData();
+            },
+            child: Text('RESET AVERAGE'),
+          ),
+        ],
       ),
     );
   }

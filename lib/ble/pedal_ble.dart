@@ -6,7 +6,13 @@ import 'dart:async';
 import 'package:pedal_logger_flutter/main.dart';
 
 class PowerViewModel extends StateNotifier<PedalState> {
-  PowerViewModel() : super(PedalState(power: 0, powerList: [], average: "0"));
+  PowerViewModel()
+      : super(PedalState(
+            power: 0,
+            powerList: [],
+            rotation: "0.0",
+            rotationList: [],
+            average: "0"));
   final String deviceName = "V3 BLE:0442838";
   FlutterBlue flutterBlue = FlutterBlue.instance;
 
@@ -24,6 +30,10 @@ class PowerViewModel extends StateNotifier<PedalState> {
   String deviceStatus = "No Device";
 
   int power = 0;
+  double rotation = 0;
+
+  int prevRev = 0;
+  int prevTime = 0;
 
   void startScan() {
     flutterBlue.startScan();
@@ -120,9 +130,27 @@ class PowerViewModel extends StateNotifier<PedalState> {
           state.powerList.reduce((a, b) => a + b) / state.powerList.length;
       state.average = ave.toStringAsFixed(1);
 
+      int rev = value[6] * 256 + value[5];
+      int time = value[8] * 256 + value[7];
+      print("rev: $rev \n time: $time");
+
+      int dr = rev - prevRev;
+      int dt = time - prevTime;
+      print("drev: $dr \n dtime: $dt");
+
+      if (dt != 0) {
+        rotation = dr * 1024 * 60 / dt;
+        state.rotationList.add(rotation);
+        state.rotation = rotation.toStringAsFixed(1);
+      }
+
+      prevRev = rev;
+      prevTime = time;
       state = PedalState(
           power: power,
           powerList: state.powerList,
+          rotation: state.rotation,
+          rotationList: state.rotationList,
           average: ave.toStringAsFixed(1));
 /*
       state = const AsyncValue.loading();
@@ -137,14 +165,35 @@ class PowerViewModel extends StateNotifier<PedalState> {
       state = PedalState(
           power: state.power,
           powerList: state.powerList,
+          rotation: state.rotation,
+          rotationList: state.rotationList,
           average: state.average);
     });
+  }
+
+  void resetData() {
+    state.powerList.clear();
+    state.rotationList.clear();
+
+    state = PedalState(
+        power: state.power,
+        powerList: state.powerList,
+        rotation: state.rotation,
+        rotationList: state.rotationList,
+        average: state.average);
   }
 }
 
 class PedalState {
-  PedalState({this.power, this.powerList, this.average});
+  PedalState(
+      {this.power,
+      this.powerList,
+      this.rotation,
+      this.rotationList,
+      this.average});
   int power;
   List<int> powerList;
+  String rotation;
+  List<double> rotationList;
   String average;
 }
