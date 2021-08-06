@@ -26,26 +26,23 @@ class DataView extends StatelessWidget {
   }
 }
 
+// ペダルのデータを表示するwidget
 class _BuildData extends HookWidget {
   const _BuildData({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final powerState = useProvider(powerProvider);
-    //final nowPower = useProvider(nowPowerProvider);
-    //final averagePower = useProvider(averagePowerProvider);
 
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Text(
-            //"$nowPower W",
             "${powerState.power}",
             style: Theme.of(context).textTheme.headline3,
           ),
           Text(
             "ave: ${powerState.average} W",
-            //"${aveList.reduce((a, b) => a + b) / aveList.length}",
             style: Theme.of(context).textTheme.headline5,
           ),
           Text(
@@ -58,6 +55,7 @@ class _BuildData extends HookWidget {
   }
 }
 
+// ペダル関連のボタンのwidget
 class ButtonWidget extends HookWidget {
   const ButtonWidget({Key key}) : super(key: key);
   @override

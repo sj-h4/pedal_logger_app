@@ -65,12 +65,6 @@ class PowerViewModel extends StateNotifier<PedalState> {
     if (targetDevice == null) return;
 
     await targetDevice.connect();
-    /*
-    setState(() {
-      deviceStatus = "Connected: ${targetDevice.name}";
-      print('connected');
-    });
-    */
     targetDevice.isDiscoveringServices.forEach((element) {
       print("is discovering $element");
     });
@@ -82,11 +76,6 @@ class PowerViewModel extends StateNotifier<PedalState> {
 
     targetDevice.disconnect();
     isConnected = false;
-/*
-    setState(() {
-      deviceStatus = "disconnected";
-    });
-*/
   }
 
   void discoverServices() async {
@@ -97,6 +86,8 @@ class PowerViewModel extends StateNotifier<PedalState> {
     });
 
     List<BluetoothService> services = await targetDevice?.discoverServices();
+
+    // 指定したserviceがあれば接続
     services.forEach((element) {
       print("service UUID: $element.uuid.toString");
       if (element.uuid.toString() == serviceUUID) {
@@ -116,10 +107,14 @@ class PowerViewModel extends StateNotifier<PedalState> {
     });
   }
 
+  // bleの値の更新を受け取る関数
   Future<void> recieveNotification() async {
     if (targetDevice == null) return 0;
     _powerSubscription?.cancel();
     await bleCharactaristic?.setNotifyValue(true);
+
+    // 以下に各bitが何を指してるかが書いてある
+    // https://www.bluetooth.com/wp-content/uploads/Sitecore-Media-Library/Gatt/Xml/Characteristics/org.bluetooth.characteristic.cycling_power_measurement.xml
     _powerSubscription = bleCharactaristic?.value?.listen((value) async {
       power = value[3] * 256 + value[2];
       print("$power");
@@ -130,6 +125,7 @@ class PowerViewModel extends StateNotifier<PedalState> {
           state.powerList.reduce((a, b) => a + b) / state.powerList.length;
       state.average = ave.toStringAsFixed(1);
 
+      // timeは 1/1024 された値が送られてくることに注意
       int rev = value[6] * 256 + value[5];
       int time = value[8] * 256 + value[7];
       print("rev: $rev \n time: $time");
@@ -152,13 +148,6 @@ class PowerViewModel extends StateNotifier<PedalState> {
           rotation: state.rotation,
           rotationList: state.rotationList,
           average: ave.toStringAsFixed(1));
-/*
-      state = const AsyncValue.loading();
-      try {
-        state = AsyncValue.data(power);
-      } on Exception catch (e) {
-        state = AsyncValue.error(e);
-      } */
     });
 
     _powerSubscription?.onDone(() {
@@ -192,8 +181,8 @@ class PedalState {
       this.rotationList,
       this.average});
   int power;
-  List<int> powerList;
+  List<int> powerList; // powerの値の保管用
   String rotation;
-  List<double> rotationList;
-  String average;
+  List<double> rotationList; // rotaionの値の保管用
+  String average; // パワーの平均値
 }
