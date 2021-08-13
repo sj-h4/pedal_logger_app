@@ -63,12 +63,14 @@ class ButtonWidget extends HookWidget {
     return Center(
       child: Column(
         children: <Widget>[
+          // ペダルと接続するボタン
           ElevatedButton(
             onPressed: () {
               context.read(powerProvider.notifier).startScan();
             },
             child: Text('CONNECT'),
           ),
+          // パワーの平均値をリセットするボタン
           ElevatedButton(
             onPressed: () {
               context.read(powerProvider.notifier).resetData();
