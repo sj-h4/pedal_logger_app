@@ -5,6 +5,7 @@ import 'dart:async';
 
 import 'package:pedal_logger_flutter/main.dart';
 
+// ペダルとの接続とペダルのデータを管理するクラス
 class PowerViewModel extends StateNotifier<PedalState> {
   PowerViewModel()
       : super(PedalState(
@@ -35,6 +36,7 @@ class PowerViewModel extends StateNotifier<PedalState> {
   int prevRev = 0;
   int prevTime = 0;
 
+  // BLEデバイスを探す関数
   void startScan() {
     flutterBlue.startScan();
     print("deviceStatus: connecting");
@@ -61,6 +63,7 @@ class PowerViewModel extends StateNotifier<PedalState> {
     );
   }
 
+  // BLEデバイスと接続する関数
   void connectToDevice() async {
     if (targetDevice == null) return;
 
@@ -71,6 +74,7 @@ class PowerViewModel extends StateNotifier<PedalState> {
     discoverServices();
   }
 
+  // BLEデバイスを切断する関数
   void disconnectDevice() {
     if (targetDevice == null) return;
 
@@ -78,6 +82,7 @@ class PowerViewModel extends StateNotifier<PedalState> {
     isConnected = false;
   }
 
+  // BLEデバイスのserviceと接続する関数
   void discoverServices() async {
     if (targetDevice == null) return;
     print("discovering");
@@ -160,6 +165,7 @@ class PowerViewModel extends StateNotifier<PedalState> {
     });
   }
 
+  // パワーと回転数のデータをリセットする関数
   void resetData() {
     state.powerList.clear();
     state.rotationList.clear();

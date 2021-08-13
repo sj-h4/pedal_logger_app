@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'dataView.dart';
 import 'settingView.dart';
 
+// 画面下部のナビゲーションバーを表示
 class BottomNavigationBarView extends HookWidget {
   final _views = [DataView(), SettingView()];
 
@@ -19,6 +20,7 @@ class BottomNavigationBarView extends HookWidget {
           type: BottomNavigationBarType.shifting,
           selectedItemColor: Colors.black,
           unselectedItemColor: Colors.grey,
+          // タブとそのアイコンの指定
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
@@ -29,6 +31,7 @@ class BottomNavigationBarView extends HookWidget {
               label: 'Setting',
             ),
           ],
+          // 押された場所に遷移する
           onTap: (int selectIndex) {
             tabType.state = TabType.values[selectIndex];
           },

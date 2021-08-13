@@ -5,6 +5,7 @@ import 'view/bottom_navi_view.dart';
 import 'view/timer.dart';
 import 'ble/pedal_ble.dart';
 
+// 画面遷移用のもの
 final tabTypeProvider =
     AutoDisposeStateProvider<TabType>((ref) => TabType.data);
 
@@ -13,9 +14,11 @@ enum TabType {
   setting,
 }
 
+// ペダルのデータの状態を管理するもの
 final powerProvider =
     StateNotifierProvider<PowerViewModel, PedalState>((_) => PowerViewModel());
 
+// タイマーの状態を管理するもの
 final timerProvider = StateNotifierProvider<TimerNotifier, TimerModel>(
   (ref) => TimerNotifier(),
 );

@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pedal_logger_flutter/main.dart';
 
+// タイマーの表示をする関数
 class TimerTextWidget extends HookWidget {
   const TimerTextWidget({Key key}) : super(key: key);
 
@@ -17,6 +18,7 @@ class TimerTextWidget extends HookWidget {
   }
 }
 
+// タイマーのスタートボタンを表示する関数
 class StartButton extends StatelessWidget {
   const StartButton({Key key}) : super(key: key);
   @override
