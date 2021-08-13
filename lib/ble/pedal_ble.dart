@@ -1,9 +1,6 @@
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'dart:async';
-
-import 'package:pedal_logger_flutter/main.dart';
 
 // ペダルとの接続とペダルのデータを管理するクラス
 class PowerViewModel extends StateNotifier<PedalState> {
